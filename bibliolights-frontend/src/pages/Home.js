@@ -5,78 +5,55 @@ import BookCard from '../components/BookCard';
 import './Home.css';
 
 const Home = () => {
-  const books = [
-    { title: 'Libro 1', author: 'Autor 1', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 2', author: 'Autor 2', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 3', author: 'Autor 3', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 4', author: 'Autor 4', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 5', author: 'Autor 5', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 6', author: 'Autor 6', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 7', author: 'Autor 7', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 8', author: 'Autor 8', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 9', author: 'Autor 9', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 10', author: 'Autor 10', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 11', author: 'Autor 9', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 12', author: 'Autor 10', img: 'https://via.placeholder.com/150' },
-    { title: 'Libro 13', author: 'Autor 9', img: 'https://via.placeholder.com/150' },
+  const allBooks = [
+    { title: 'Libro 1', author: 'Autor 1', img: 'https://via.placeholder.com/150', theme: 'Python' },
+    { title: 'Libro 2', author: 'Autor 2', img: 'https://via.placeholder.com/150', theme: 'React' },
+    { title: 'Libro 3', author: 'Autor 3', img: 'https://via.placeholder.com/150', theme: 'Node.js' },
+    { title: 'Libro 4', author: 'Autor 4', img: 'https://via.placeholder.com/150', theme: 'Python' },
+    { title: 'Libro 5', author: 'Autor 5', img: 'https://via.placeholder.com/150', theme: 'React' },
+    { title: 'Libro 6', author: 'Autor 6', img: 'https://via.placeholder.com/150', theme: 'Node.js' },
   ];
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const [selectedTheme, setSelectedTheme] = useState('Todos'); // Estado para el tema seleccionado
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
 
-  // Calcular libros a mostrar en la página actual
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentBooks = books.slice(indexOfFirstItem, indexOfLastItem);
+  // Manejar cambio de categoría
+  const handleCategoryClick = (theme) => {
+    setSelectedTheme(theme);
+  };
 
-  // Cambiar página
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  // Manejar búsqueda
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
 
-  const totalPages = Math.ceil(books.length / itemsPerPage);
+  // Filtrar libros
+  const filteredBooks = allBooks.filter((book) => {
+    const matchesTheme = selectedTheme === 'Todos' || book.theme === selectedTheme;
+    const matchesSearch = book.title.toLowerCase().includes(searchTerm);
+    return matchesTheme && matchesSearch;
+  });
 
   return (
     <div className="home">
       <Navbar />
-
-      {/* Barra de búsqueda */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Buscar libros..."
-          className="search-input"
-        />
-      </div>
-
-      {/* Título "LIBROS" */}
-      <h2 className="books-title">LIBROS</h2>
-
-      {/* Contenido principal */}
       <div className="content">
-        <div className="main">
-          {/* Tarjetas de libros */}
+        <Sidebar onCategoryClick={handleCategoryClick} />
+        <div className="main-content">
+          <h1>Libros</h1>
+          <input
+            type="text"
+            placeholder="Buscar por título..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="search-bar"
+          />
           <div className="book-grid">
-            {currentBooks.map((book, index) => (
-              <BookCard key={index} {...book} />
-            ))}
-          </div>
-
-          {/* Paginación */}
-          <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                className={`page-button ${
-                  currentPage === index + 1 ? 'active' : ''
-                }`}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </button>
+            {filteredBooks.map((book, index) => (
+              <BookCard key={index} title={book.title} author={book.author} img={book.img} />
             ))}
           </div>
         </div>
-
-        <Sidebar />
       </div>
     </div>
   );

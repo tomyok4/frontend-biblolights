@@ -15,4 +15,20 @@
     cursor: pointer;
     color: var(--color-text);
   }
+ 
+  .sidebar li {
+    margin: 10px 0;
+    cursor: pointer;
+    color: var(--color-text);
+    padding: 10px;
+    border-radius: 4px;
+  }
   
+  .sidebar li:hover {
+    background-color: #3c2b2b; /* Fondo más oscuro al pasar el ratón */
+    color: #fff; /* Texto blanco al pasar el ratón */
+  }
+  
+  .sidebar li:active {
+    background-color: #4f3737; /* Color marrón más claro al hacer clic */
+  }
